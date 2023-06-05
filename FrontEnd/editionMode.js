@@ -291,11 +291,12 @@ formAddPicture.addEventListener("submit", async (event) => {
 
   const response = await uploadData(formData);
   const newWork = {
+    id: response.data.id,
     imageUrl: response.data.imageUrl,
     title: response.data.title,
   };
-  createWorkContainer(newWork);
   displayOneWork(newWork);
+  createWorkContainer(newWork);
   displayNewWork(newWork);
 
   fileInput.value = "";
@@ -315,12 +316,12 @@ function displayNewWork(work) {
   workContainer.classList.add("work-container");
   workImgContainer.classList.add("work-img-container");
   editButton.classList.add("edit-button");
+  binIcon.src = "assets/icons/bin.png";
   binButton.classList.add("bin-button");
   binIcon.classList.add("bin-icon");
   editButton.textContent = "Editer";
   workImgContainer.style.backgroundImage = `url(${work.imageUrl})`;
   workContainer.dataset.workId = work.id;
-  binIcon.src = "assets/icons/bin.png";
 
   workContainer.appendChild(workImgContainer);
   workImgContainer.appendChild(binButton);
@@ -333,16 +334,9 @@ function displayNewWork(work) {
     const gallery = document.querySelector(".gallery");
     const figure = gallery.querySelector(`figure[data-work-id="${work.id}"]`);
     event.preventDefault();
-    await deleteWork(work.id);
     workContainer.remove();
-
-    if (figure) {
-      gallery.removeChild(figure); 
-    } else {
-      console.error(
-        "Travail non trouvé."
-      );
-    }
+    gallery.removeChild(figure);
+    await deleteWork();
   });
   return workContainer;
 }
